@@ -1,0 +1,8 @@
+main: jns.second_test.Main
+name: second_test
+version: 1.0.0
+
+commands:
+   hello:
+      description: Types you something
+      usage: /hello something
