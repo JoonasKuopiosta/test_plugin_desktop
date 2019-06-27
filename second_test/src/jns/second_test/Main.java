@@ -7,10 +7,12 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class Main extends JavaPlugin {
 	
+	EventManager eventManager;
+	
 	@Override
 	public void onEnable() {
 		// TODO Auto-generated method stub
-		getLogger().info("Joonas mod is enabled XD");
+		getLogger().info("Joonas mod is enabled v1.1.1");
 		super.onEnable();
 	}
 	
@@ -23,8 +25,15 @@ public class Main extends JavaPlugin {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if (label.equalsIgnoreCase("hello") && sender instanceof Player) {
-			Player player = (Player) sender;
-			player.sendMessage("Moi " + player.getName() +", olet gae");
+			getLogger().info("Command worked, " + sender.getName() + ", with argument size: " + Integer.toString(args.length));
+			if(args.length >= 1) {
+				if(args[0].equalsIgnoreCase("run")) {
+					getLogger().info("Here you go: " + args[0]);
+					eventManager.runnable();
+				}
+			} else {
+				eventManager = new EventManager(this);
+			}
 		}
 		
 		

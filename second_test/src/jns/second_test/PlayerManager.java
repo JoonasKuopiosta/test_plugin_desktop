@@ -4,9 +4,8 @@ import java.util.ArrayList;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 
-public class PlayerManager extends JavaPlugin {
+public class PlayerManager{
 	
 	ArrayList<Participant> participantList = new ArrayList<Participant>();
 	
