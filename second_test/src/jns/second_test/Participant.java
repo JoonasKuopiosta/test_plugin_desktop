@@ -19,6 +19,8 @@ public class Participant {
 	int getScore() {return score;}
 	
 	boolean setTeam(String newTeam) {
+		// Requires string that needs to be either "survivor" or "monster" and assigns that to the
+		// participant
 		switch(newTeam) {
 		case "survivor":
 			team = "survivor";
@@ -31,7 +33,9 @@ public class Participant {
 		}
 	}
 	
-	String changeTeam() {		
+	String changeTeam() {
+		// Changes the team of the participant to the opposite of what it currently is
+		// Returns the new team assigned to the participant
 		if (team == "survivor") {
 			team = "monster";
 		} else {
