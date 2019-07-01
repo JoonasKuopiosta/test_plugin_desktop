@@ -5,10 +5,49 @@ import java.util.ArrayList;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import net.md_5.bungee.api.ChatColor;
+
 public class PlayerManager{
+	
+	float maxDistForNear;
 	
 	ArrayList<Participant> participantList = new ArrayList<Participant>();
 	// A list that contains all current participants
+	
+	public PlayerManager() {
+		maxDistForNear = 10.0f;
+	}
+	
+	public void commandParser(String[] argus, Player caster) {
+		switch (argus[1]) {
+		case "add":
+			if (argus[2] != null) {
+				boolean result = addParticipant(getPlayerByName(argus[2]));
+				if (result) {
+					caster.sendMessage(ChatColor.GREEN + "Pelaaja " + argus[2] + " lisätty!");
+				} else {
+					caster.sendMessage(ChatColor.RED + "Pelaajaa nimellä " + argus[2] + " ei löydy!");
+				}
+			}
+			break;
+		case "remove":
+			boolean result = removeParticipant(getPlayerByName(argus[2]));
+			if (result) {
+				caster.sendMessage(ChatColor.GREEN + "Pelaaja " + argus[2] + " poistettu!");
+			} else {
+				caster.sendMessage(ChatColor.RED + "Pelaajaa nimellä " + argus[2] + " ei löydy!");
+			}
+			break;
+		case "addNear":
+			int num1 = addNearbyPlayersToList(caster, maxDistForNear);
+			caster.sendMessage(ChatColor.GREEN + "Lisäsit " + num1 + " pelaajaa!");
+			break;
+		case "clear":
+			int num2 = clearAllParticipants();
+			caster.sendMessage(ChatColor.GREEN + "Kaikki " + num2 + " pelaajaa poistettu!");
+			break;
+		}
+	}
 	
 	protected Player getPlayerByName(String playerName) {
 		// Finds player from the SERVER by the given player name
@@ -20,16 +59,20 @@ public class PlayerManager{
 		return null;
 	}
 	
-	public void addNearbyPlayersToList(Player caster, double maxDist) {
+	public int addNearbyPlayersToList(Player caster, double maxDist) {
 		// Adds all player who are around the caster below or equal to max distance
 		// Ignores the caster
+		int playersAdded = 0;
+		
 		for (Player other : Bukkit.getOnlinePlayers()) {
 			if(other != caster) {
 				if(other.getLocation().distance(caster.getLocation()) <= maxDist) {
 					addPlayerToParticipantList(other);
+					playersAdded++;
 				}
 			}
 		}
+		return playersAdded;
 	}
 	
 	public Participant getParticipant(Player player) {
@@ -45,8 +88,11 @@ public class PlayerManager{
 	
 	public boolean addParticipant(Player player) {
 		// Calls method that adds player into participant list
-		addPlayerToParticipantList(player);
-		return true;
+		if (player != null) {
+			addPlayerToParticipantList(player);
+			return true;
+		}
+		return false;
 	}
 	
 	public boolean removeParticipant(Player player) {
@@ -55,9 +101,11 @@ public class PlayerManager{
 		return removePlayerFromParticipantList(player);
 	}
 	
-	public void clearAllParticipants() {
+	public int clearAllParticipants() {
 		// Clears the list of players
+		int amountRemoved = participantList.size();
 		participantList.clear();
+		return amountRemoved;
 	}
 	
 	protected boolean removePlayerFromParticipantList(Player player) {
