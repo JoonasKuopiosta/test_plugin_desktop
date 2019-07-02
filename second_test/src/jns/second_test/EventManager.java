@@ -15,7 +15,7 @@ public class EventManager{
 	}
 	
 	public void startUp() {
-		// TODO: asd asd asd
+		playerManager = new PlayerManager();
 	}
 	
 	public void commandToPlayerManager(String[] argus, Player caster) {playerManager.commandParser(argus, caster);}

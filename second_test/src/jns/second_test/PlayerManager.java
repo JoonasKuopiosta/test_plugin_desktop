@@ -10,6 +10,7 @@ import net.md_5.bungee.api.ChatColor;
 public class PlayerManager{
 	
 	float maxDistForNear;
+	String prsdArgs;
 	
 	ArrayList<Participant> participantList = new ArrayList<Participant>();
 	// A list that contains all current participants
@@ -19,32 +20,73 @@ public class PlayerManager{
 	}
 	
 	public void commandParser(String[] argus, Player caster) {
-		switch (argus[1]) {
-		case "add":
-			if (argus[2] != null) {
-				boolean result = addParticipant(getPlayerByName(argus[2]));
-				PMPrints.printMessages(caster, argus, result);
+		boolean isPlayer = caster instanceof Player;
+		String infoText = "Sallitut player-komennot: add, remove, addnear, printall, clear";
+		boolean result = false;
+		
+		if (argus[2] != null){
+			String param = argus[2];
+			
+			switch(argus[1]) {
+			case "add":
+				if (param == null) {
+					infoText = "Käyttötapa: add [pelaajan nimi]";
+				} else {
+					result = addParticipant(getPlayerByName(param));
+					if (result) {
+						infoText = "Lisäsit onnistuneesti pelaajan " + param;
+					} else {
+						infoText = "Nimellä " + param+ " ei löytynyt pelaajaa!";
+					}
+				}
+				break;
+			case "remove":
+				if (param == null) {
+					infoText = "Käyttötapa: remove [pelaajan nimi]";
+				} else {
+					result = removeParticipant(getPlayerByName(param));
+					if (result) {
+						infoText = "Poistit onnistuneesti pelaajan " + param;
+					} else {
+						infoText = "Nimellä " + param + " ei löytynyt eventin osanottajaa!";
+					}
+				}
+				break;
+			case "addnear":
+				if (!isPlayer) {
+					infoText = "addnear ei ole sallittu konsoli-komento!";
+				} else {
+					addNearbyPlayersToList(caster, maxDistForNear);
+					int num = addNearbyPlayersToList(caster, maxDistForNear);
+					if (num < 1) {
+						infoText = "Lähelläsi ei yhtään pelaajaa!";
+					} else {
+						infoText = "Lisäsit " + num + " pelaajaa!";
+					}
+				}
+				break;
+			case "clear":
+				int num = clearAllParticipants();
+				if (num < 1) {
+					infoText = "Ei yhtään pelaajaa poistettavaksi!";
+				} else {
+					infoText = "Poistit juuri " + num + " pelaajaa";
+				}
+				break;
+			case "printall":
+				printAllParticipants(caster);
+				break;
 			}
-			break;
-		case "remove":
-			boolean result = removeParticipant(getPlayerByName(argus[2]));
+		}
+		
+		if (isPlayer) {
 			if (result) {
-				caster.sendMessage(ChatColor.GREEN + "Pelaaja " + argus[2] + " poistettu!");
+				caster.sendMessage(ChatColor.GREEN + infoText);
 			} else {
-				caster.sendMessage(ChatColor.RED + "Pelaajaa nimellä " + argus[2] + " ei löydy!");
+				caster.sendMessage(ChatColor.RED + infoText);
 			}
-			break;
-		case "addnear": // Big N changed to n
-			int num1 = addNearbyPlayersToList(caster, maxDistForNear);
-			caster.sendMessage(ChatColor.GREEN + "Lisäsit " + num1 + " pelaajaa!");
-			break;
-		case "clear":
-			int num2 = clearAllParticipants();
-			caster.sendMessage(ChatColor.GREEN + "Kaikki " + num2 + " pelaajaa poistettu!");
-			break;
-		default:
-			caster.sendMessage(ChatColor.LIGHT_PURPLE + "Sallitut player-komennot: add, remove, addnear, clear");
-			break;
+		} else {
+			Bukkit.getLogger().info(infoText);
 		}
 	}
 	
@@ -100,17 +142,6 @@ public class PlayerManager{
 		return amountRemoved;
 	}
 	
-	public void listParticipants(Player caster, boolean toConsole) {
-		for (Participant part : participantList) {
-			String msg = part.getPlayer().getName() + " p:" + part.getScore() + "  " + part.getTeam();
-			if (toConsole) {
-				Bukkit.getLogger().info(msg);
-			} else {
-				caster.sendMessage(ChatColor.GREEN + msg);
-			}
-		}
-	}
-	
 	// =========== PRIVATE METHODS START HERE ===========
 	
 	private Player getPlayerByName(String playerName) {
@@ -141,5 +172,25 @@ public class PlayerManager{
 		// Creates new Participant and give player as parameter, which is then added to the participant list
 		Participant participant = new Participant(player);
 		participantList.add(participant);
+	}
+	
+	private void printAllParticipants(Player caster) {
+		int size = participantList.size();
+		
+		if (participantList.size() < 1) {
+			if (caster instanceof Player) {
+				caster.sendMessage("Ei pelaajia :(");
+			} else {
+				Bukkit.getLogger().info("Ei pelaajia :(");
+			}
+		}
+		
+		for (Participant part : participantList) {
+			if (caster instanceof Player) {
+				caster.sendMessage(ChatColor.GREEN + part.toString() + " " + size);
+			} else {
+				Bukkit.getLogger().info(part.toString() + " " + size);
+			}
+		}
 	}
 }
