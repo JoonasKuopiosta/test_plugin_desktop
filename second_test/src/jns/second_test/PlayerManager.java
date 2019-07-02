@@ -38,7 +38,7 @@ public class PlayerManager{
 				caster.sendMessage(ChatColor.RED + "Pelaajaa nimellä " + argus[2] + " ei löydy!");
 			}
 			break;
-		case "addNear":
+		case "addnear": // Big N changed to n
 			int num1 = addNearbyPlayersToList(caster, maxDistForNear);
 			caster.sendMessage(ChatColor.GREEN + "Lisäsit " + num1 + " pelaajaa!");
 			break;
@@ -46,18 +46,14 @@ public class PlayerManager{
 			int num2 = clearAllParticipants();
 			caster.sendMessage(ChatColor.GREEN + "Kaikki " + num2 + " pelaajaa poistettu!");
 			break;
+		default:
+			caster.sendMessage(ChatColor.LIGHT_PURPLE + "Sallitut player-komennot: add, remove, addnear, clear");
+			break;
 		}
 	}
 	
-	protected Player getPlayerByName(String playerName) {
-		// Finds player from the SERVER by the given player name
-		for (Player other : Bukkit.getOnlinePlayers()) {
-			if (other.getName().equalsIgnoreCase(playerName)) {
-				return other;
-			}
-		}
-		return null;
-	}
+	
+	// =========== PUBLIC METHODS START HERE ===========
 	
 	public int addNearbyPlayersToList(Player caster, double maxDist) {
 		// Adds all player who are around the caster below or equal to max distance
@@ -108,7 +104,19 @@ public class PlayerManager{
 		return amountRemoved;
 	}
 	
-	protected boolean removePlayerFromParticipantList(Player player) {
+	// =========== PRIVATE METHODS START HERE ===========
+	
+	private Player getPlayerByName(String playerName) {
+		// Finds player from the SERVER by the given player name
+		for (Player other : Bukkit.getOnlinePlayers()) {
+			if (other.getName().equalsIgnoreCase(playerName)) {
+				return other;
+			}
+		}
+		return null;
+	}
+	
+	private boolean removePlayerFromParticipantList(Player player) {
 		// Goes through the list of participants, and if NO participant matching the player
 		// can be found returns false
 		if (player != null) {
@@ -122,7 +130,7 @@ public class PlayerManager{
 		return false;
 	}
 	
-	protected void addPlayerToParticipantList(Player player) {
+	private void addPlayerToParticipantList(Player player) {
 		// Creates new Participant and give player as parameter, which is then added to the participant list
 		Participant participant = new Participant(player);
 		participantList.add(participant);

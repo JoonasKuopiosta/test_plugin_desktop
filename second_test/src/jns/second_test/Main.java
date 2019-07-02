@@ -71,15 +71,18 @@ public class Main extends JavaPlugin {
 						caster.sendMessage(ChatColor.RED + "Muista aktivoida event jaada jaada!");
 					}
 					break;
+				default:
+				caster.sendMessage(ChatColor.LIGHT_PURPLE + "Sallitut komennot: startup, player, start");
+				break;
 				}
 			}
 		}
-		
-		
 		return true;
 	}
 	
-	protected String[] toLenghtOf5(String[] args) {
+	// =========== PRIVATE METHODS START HERE ===========
+	
+	private String[] toLenghtOf5(String[] args) {
 		String[] argus = new String[5];
 		
 		for (int i = 0; i < 5; i++) {
