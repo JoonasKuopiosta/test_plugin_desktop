@@ -75,18 +75,21 @@ public class PlayerManager{
 				break;
 			case "printall":
 				printAllParticipants(caster);
+				infoText = null;
 				break;
 			}
 		}
 		
-		if (isPlayer) {
-			if (result) {
-				caster.sendMessage(ChatColor.GREEN + infoText);
+		if (infoText != null) {
+			if (isPlayer) {
+				if (result) {
+					caster.sendMessage(ChatColor.GREEN + infoText);
+				} else {
+					caster.sendMessage(ChatColor.RED + infoText);
+				}
 			} else {
-				caster.sendMessage(ChatColor.RED + infoText);
+				Bukkit.getLogger().info(infoText);
 			}
-		} else {
-			Bukkit.getLogger().info(infoText);
 		}
 	}
 	
@@ -179,7 +182,7 @@ public class PlayerManager{
 		
 		if (participantList.size() < 1) {
 			if (caster instanceof Player) {
-				caster.sendMessage("Ei pelaajia :(");
+				caster.sendMessage(ChatColor.RED + "Ei pelaajia :(");
 			} else {
 				Bukkit.getLogger().info("Ei pelaajia :(");
 			}
