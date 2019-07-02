@@ -23,11 +23,7 @@ public class PlayerManager{
 		case "add":
 			if (argus[2] != null) {
 				boolean result = addParticipant(getPlayerByName(argus[2]));
-				if (result) {
-					caster.sendMessage(ChatColor.GREEN + "Pelaaja " + argus[2] + " lisätty!");
-				} else {
-					caster.sendMessage(ChatColor.RED + "Pelaajaa nimellä " + argus[2] + " ei löydy!");
-				}
+				PMPrints.printMessages(caster, argus, result);
 			}
 			break;
 		case "remove":
@@ -102,6 +98,17 @@ public class PlayerManager{
 		int amountRemoved = participantList.size();
 		participantList.clear();
 		return amountRemoved;
+	}
+	
+	public void listParticipants(Player caster, boolean toConsole) {
+		for (Participant part : participantList) {
+			String msg = part.getPlayer().getName() + " p:" + part.getScore() + "  " + part.getTeam();
+			if (toConsole) {
+				Bukkit.getLogger().info(msg);
+			} else {
+				caster.sendMessage(ChatColor.GREEN + msg);
+			}
+		}
 	}
 	
 	// =========== PRIVATE METHODS START HERE ===========
