@@ -24,7 +24,7 @@ public class PlayerManager{
 		String infoText = "Sallitut player-komennot: add, remove, addnear, printall, clear";
 		boolean result = false;
 		
-		if (argus[2] != null){
+		if (argus[1] != null){
 			String param = argus[2];
 			
 			switch(argus[1]) {
