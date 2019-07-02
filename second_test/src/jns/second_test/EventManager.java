@@ -9,6 +9,7 @@ public class EventManager{
 	Main main;
 	PlayerManager playerManager;
 	int totalLoopsDone;
+	// kommentti
 	
 	public EventManager(Main reference) {
 		main = reference;
